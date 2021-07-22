@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = "flash message"
 app.config['MYSQL_HOST']='localhost'
 app.config['MYSQL_USER']='root'
-app.config['MYSQL_PASSWORD']='Gauranitai27#'
+app.config['MYSQL_PASSWORD']='your_password'
 app.config['MYSQL_DB']='CrudApplication'
 
 mysql=MySQL(app)
