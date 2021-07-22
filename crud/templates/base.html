@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
+    <link rel="shortcut icon" href="{{url_for('static',filename='favicon.ico')}}">
+    <title>Crud App</title>
+    {% block head %} {% endblock %}
+</head>
+
+<body>
+
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    -->
+
+    <!-- Modal for Add student  START-->
+<div class="modal fade" id="mymodal" tabindex="-5" aria-labelledby="mymodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="mymodalLabel">Fill the details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="{{url_for('insert')}}" method="POST">
+                
+                <div class="form-group mb-3">
+                  <label for="exampleInputname" class="form-label">Name :</label>
+                  <input type="text" class="form-control" name="name" required="1" id="exampleInputname" >
+          
+                </div>
+                <div class="form-group mb-3">
+                    <label for="exampleInputEmail" class="form-label">E-mail :</label>
+                    <input type="email" class="form-control" name="email" required="1" id="exampleInputEmail" >
+            
+                </div>
+                <div class="form-group mb-3">
+                    <label for="exampleInputPh" class="form-label">Phone NO :</label>
+                    <input type="text" class="form-control" name="phone" required="1" id="exampleInputphone" >
+            
+                </div>
+
+
+               
+             
+                <button type="submit" class="btn btn-primary">Insert Data</button>
+              </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      
+        </div>
+      </div>
+    </div>
+  </div>
+ <!-- Modal for Add student END -->
+
+
+
+
+    <div class="container">
+        <h3 class=" bg-light text-center" style="padding: 2%;">My crud app</h3>
+
+        <div class="container">
+            <div class="row">
+                <div class="col md-12">
+                    <h5>
+                        studentlist <button style="float: right;" type="button" data-bs-toggle="modal"
+                            data-bs-target="#mymodal" class="btn btn-success">Add student data</button>
+                    </h5>
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissable" role="alert">
+                        {{message}}
+
+                        <span style="float: right;">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+                            </button>
+                        </span>
+
+
+
+                    </div>
+
+
+
+
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
+
+                    <table class="table table-stripped">
+                        <tr>
+                            <th>S.No</th>
+                            <th>Name</th>
+                            <th>E-mail</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                        </tr>
+                        {% for row in students %}
+                        <tr>
+                            <td>{{row.0}}</td>
+                            <td>{{row.1}}</td>
+                            <td>{{row.2}}</td>
+                            <td>{{row.3}}</td>
+                            <td> <a href="/update/{{row.0}}" class="btn btn-warning btn-xs " data-bs-toggle="modal"
+                                    data-bs-target="#editmodal{{row.0}}">Edit</a>&nbsp;<a href="/delete/{{row.0}}"
+                                    class="btn btn-danger btn-xs" onclick="return confirm('Are you sure?')">Delete</a>
+                            </td>
+                        </tr>
+                        <!-- Modal for upadate START -->
+                        <div class="modal fade" id="editmodal{{row.0}}" tabindex="-5" aria-labelledby="mymodalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="mymodalLabel">update the details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{url_for('update')}}" method="POST">
+                                            <div class="form-group mb-3">
+
+
+                                                <label>Name:</label>
+                                                <input type="hidden" name="id" value="{{row.0}}">
+
+                                                <input type="text" class="form-control" name="name" value="{{row.1}}">
+
+
+                                            </div>
+
+                                           
+                                            <div class="form-group mb-3">
+                                                <label for="exampleInputEmail" class="form-label">E-mail :</label>
+                                                <input type="email" class="form-control" name="email" value="{{row.2}}"
+                                                    id="exampleInputEmail">
+
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="exampleInputPh" class="form-label">Phone NO :</label>
+                                                <input type="text" class="form-control" name="phone" value="{{row.3}}"
+                                                    id="exampleInputphone">
+
+                                            </div>
+
+
+
+
+                                            <button type="submit" class="btn btn-primary">Update Data</button>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <!-- Modal for upadate END -->
+
+
+                        {% endfor %}
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h6 class=" bg-light " style="padding: 1%;">
+                <a style="text-decoration: none;color: gray;" href="https://github.com/prasanthkc777">
+                    <i class="fa fa-github"></i>
+                    Git Hub: https://github.com/prasanthkc777 </a>
+                <span><a style="float: right;text-decoration: none;color: gray;"
+                        href="https://www.linkedin.com/in/srinikc-prasanth-b137351a0/"><button type="button"
+                            class="btn btn-secondary"><i class="fa fa-linkedin"></i> &nbsp;: Click here to
+                            visit</button>
+                    </a></span>
+
+            </h6>
+        </div>
+
+    </div>
+
+
+
+
+    {% block body %} {% endblock %}
+</body>
+
+
+</html>
